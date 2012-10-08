@@ -1,0 +1,94 @@
+%\documentclass{beamer}
+\documentclass[xcolor=pdftex,dvipsnames,table]{beamer}
+\usepackage{verbatim}
+
+
+\usetheme{Luebeck}
+\usecolortheme[named=RawSienna]{structure}
+\setbeamerfont{frametitle}{family=\rmfamily,shape=\itshape}
+%\setbeamertemplate{frametitle}[default][center]
+\defbeamertemplate*{title page}{customized}[1][]
+{
+  \vspace{1.9cm}
+
+% Content  
+  \begin{minipage}{10cm}
+  
+  % Title and subtitle
+  \begin{beamercolorbox}[center,#1]{title}
+    \usebeamerfont{title}\inserttitle\par%
+    \ifx\insertsubtitle\@empty%
+    \else%
+      \vskip0.25em%
+      {\usebeamerfont*{subtitle}\usebeamercolor*[fg]{subtitle}\insertsubtitle\par}%
+    \fi%
+  \end{beamercolorbox}%
+  
+  \vskip1em\par
+  
+  % Display author(s)
+  \begin{beamercolorbox}[center,#1]{author}
+    \usebeamerfont{author}\insertauthor{}
+  \end{beamercolorbox}
+  
+  \vskip1em\par
+
+  % Institute
+  \begin{beamercolorbox}[center,#1]{institute}
+    \usebeamerfont{institute}\insertinstitute{}
+  \end{beamercolorbox}
+  
+  \vskip1em%
+  
+  % Date
+  \begin{beamercolorbox}[center,#1]{date}
+    \usebeamerfont{date}\insertdate
+  \end{beamercolorbox}\vskip0.5em
+
+  \end{minipage}
+  \hspace{0.6cm}
+  \vfill
+
+  \begin{flushleft}
+  {\usebeamercolor[fg]{titlegraphic}\inserttitlegraphic\par}
+  \end{flushleft}
+  \hfill
+
+%  \usebeamerfont{title}\inserttitle\par
+%  \usebeamerfont{subtitle}\usebeamercolor[fg]{subtitle}\insertsubtitle\par
+%  \bigskip
+%  \usebeamerfont{author}\insertauthor\par
+%  \usebeamerfont{institute}\insertinstitute\par
+%  \usebeamerfont{date}\insertdate\par
+%  \usebeamercolor[fg]{titlegraphic}\inserttitlegraphic
+}
+
+\title{Deferreds}
+\subtitle{Strategy for Resource Reservation in the ITVM}
+\author{David Buchmann}
+\institute{Cisco Systems}
+
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\begin{frame}[allowframebreaks]{Contents}
+  \tableofcontents
+\end{frame}
+
+\section{ITVM Workloads}
+\subsection{Matchbox Tests (smoke tests)}
+\begin{frame}
+
+  \frametitle{Matchbox: Y u no run faster?}
+  \includegraphics[scale=0.33]{matchbox.jpg}
+  \begin{itemize}
+    \item The matchbox test takes a long time to start, why?
+    \item Depending on the product, host/target the matchbox test
+      needs different resources to run correctly.
+  \end{itemize}
+\end{frame}
+
+\end{document}

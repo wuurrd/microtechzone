@@ -1,0 +1,12 @@
+*.aux
+*.log
+*~
+*.pyc
+*.pdf
+*.snm
+*.toc
+*.vrb
+*.out
+*.nav
+\#*
+_trial_temp/
