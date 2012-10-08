@@ -78,17 +78,148 @@
   \tableofcontents
 \end{frame}
 
-\section{ITVM Workloads}
+\section{Introduction}
+\subsection{Me... Zzzzz...}
+\begin{frame}
+  \begin{itemize}
+    \item Work as a QA Tools developer
+    \item Have worked in TANDBERG / CISCO for 3 years.
+  \end{itemize}
+\end{frame}
+
+\section{ITVM Tasks}
 \subsection{Matchbox Tests (smoke tests)}
 \begin{frame}
-
   \frametitle{Matchbox: Y u no run faster?}
-  \includegraphics[scale=0.33]{matchbox.jpg}
+  \begin{columns}[cc]
+  \column{0.5 in}
+  \includegraphics[scale=0.30]{matchbox.jpg}
+  \column{2.4 in}
   \begin{itemize}
-    \item The matchbox test takes a long time to start, why?
-    \item Depending on the product, host/target the matchbox test
-      needs different resources to run correctly.
+    \item The matchbox test (a.k.a our smoke test) takes a long time to start, why?
+    \item Depending on product, the matchbox test
+      needs different resources to run.
   \end{itemize}
+  \end{columns}
+\end{frame}
+
+\subsection{ITVM tests parameters}
+\begin{frame}
+  \frametitle{ITVM: What parameters affect planning?}
+  \begin{itemize}
+    \item Targets needed (the devices being tested) - hostname / type
+    \item References needed (the devices used as references) -
+      hostname / type
+    \item Is matchbox - whether the test is a matchbox test
+    \item Priority - default 0, the priority this test should run with
+  \end{itemize}
+\end{frame}
+
+\subsection{ITVM: Test outcomes}
+\begin{frame}
+  \begin{columns}[cc]
+  \column{1.5in}
+  \includegraphics[scale=0.33]{brian.jpg}
+  \column{1.5in}
+  \begin{itemize}
+    \item Passed
+    \item Upload failure
+    \item Setup failure
+    \item Killed
+  \end{itemize}
+  \end{columns}
+\end{frame}
+
+\section{Strategies}
+\subsection{What do we want to prioritise?}
+\begin{frame}
+\frametitle{Prioritization}
+\begin{itemize}
+  \item ITVMTest initialised tests
+  \item Matchbox tests
+  \item Regression tests
+\end{itemize}
+\end{frame}
+
+\subsection{FIFO}
+\begin{frame}
+\frametitle{Naive Approach}
+\begin{itemize}
+  \item The first approach we attempted was FIFO (first in - first
+    out).
+  \item Get a sorted queue (by when added) of tests to run, stop when we do not have
+    enough resources to run.
+  \item Pros: simple to implement
+  \item Cons: it's crap - lots of resources were left unused, and
+    matchbox tests were not prioritised over regression that could
+    complete during
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+Example:
+\begin{itemize}
+  \item Pool has 3 snoopys and 3 falcons
+  \item Task 1 requires 2 snoopies and 2 falcons
+  \item Task 2 requires 1 snoopy and 2 falcons
+  \item Task 3 requires 1 snoopy and 1 falcon and is a matchbox test
+  \item Task 4 requires 3 snoopys
+  \item Task 5 requires 1 snoopy and 1 falcon
+  \item $\rightarrow$ Task 3 needs to wait for Task 1 and 2 to complete.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Slightly less naive approach}
+Same strategy, but sort the order of the queue to be run by
+\begin{itemize}
+  \item Priority
+  \item Is matchbox
+  \item When they were added 
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+Example:
+\begin{itemize}
+  \item Pool has 3 snoopys and 3 falcons
+  \item Task 3 requires 1 snoopy and 1 falcon and is a matchbox test
+  \item Task 1 requires 2 snoopies and 2 falcons
+  \item Task 2 requires 1 snoopy and 2 falcons
+  \item Task 4 requires 3 snoopys
+  \item Task 5 requires 1 snoopy and 1 falcon
+  \item $\rightarrow$ Task 3 does not wait for anyone, but when Task 4
+    is running we have a lock on all snoopys so the queue will grow
+    very large - we would rather run this task when the queue is small
+\end{itemize}
+\end{frame}
+
+\subsection{Current Approach}
+
+\begin{frame}
+\frametitle{The current approach: First-can-first-serve}
+\begin{itemize}
+  \item Go through the sorted queue, but do \textbf{not} stop when we
+    do not have enough resources to run
+  \item Pros: Will always attempt to run the most possible tests in parallel
+  \item Cons: Tests that reserve a lot of resources will be less
+    likely to run
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+Example:
+\begin{itemize}
+  \item Pool has 3 snoopys and 3 falcons
+  \item Task 3 requires 1 snoopy and 1 falcon and is a matchbox test
+  \item Task 1 requires 2 snoopies and 2 falcons
+  \item Task 2 requires 1 snoopy and 2 falcons
+  \item Task 4 requires 3 snoopys
+  \item Task 5 requires 1 snoopy and 1 falcon
+  \item $\rightarrow$ The chance that Task 4 runs when there is a long
+    queue is smaller, so we can shorten the queue and prioritise
+    getting done with as many tasks as possible.
+\end{itemize}
 \end{frame}
 
 \end{document}
