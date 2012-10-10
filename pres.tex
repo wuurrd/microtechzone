@@ -78,34 +78,11 @@
   \tableofcontents
 \end{frame}
 
-\section{Introduction}
-\subsection{Me... Zzzzz...}
-\begin{frame}
-  \begin{itemize}
-    \item Work as a QA Tools developer
-    \item Have worked in TANDBERG / CISCO for 3 years.
-  \end{itemize}
-\end{frame}
-
-\section{ITVM Tasks}
-\subsection{Matchbox Tests (smoke tests)}
-\begin{frame}
-  \frametitle{Matchbox: Y u no run faster?}
-  \begin{columns}[cc]
-  \column{0.5 in}
-  \includegraphics[scale=0.30]{matchbox.jpg}
-  \column{2.4 in}
-  \begin{itemize}
-    \item The matchbox test (a.k.a our smoke test) takes a long time to start, why?
-    \item Depending on product, the matchbox test
-      needs different resources to run.
-  \end{itemize}
-  \end{columns}
-\end{frame}
+\section{Testing}
 
 \subsection{ITVM tests parameters}
 \begin{frame}
-  \frametitle{ITVM: What parameters affect planning?}
+  \frametitle{ITVM: What parameters affect reservation time?}
   \begin{itemize}
     \item Targets needed (the devices being tested) - hostname / type
     \item References needed (the devices used as references) -
@@ -130,30 +107,59 @@
   \end{columns}
 \end{frame}
 
+\section{ITVM Tasks}
+\subsection{Matchbox Tests (smoke tests)}
+\begin{frame}
+  \frametitle{Matchbox: Y u no run faster?}
+  \begin{columns}[cc]
+  \column{0.7 in}
+  \includegraphics[scale=0.33]{matchbox.jpg}
+  \column{2.3 in}
+  \begin{itemize}
+    \item The matchbox test (a.k.a our smoke test) takes a long time to start, why?
+    \item Depending on product, the matchbox test
+      needs different resources to run.
+  \end{itemize}
+  \end{columns}
+\end{frame}
+
 \section{Strategies}
 \subsection{What do we want to prioritise?}
 \begin{frame}
 \frametitle{Prioritization}
+\begin{columns}[cc]
+\column{1.5in}
+\includegraphics[scale=0.33]{priority.jpg}
+
+\column{1.5in}
 \begin{itemize}
-  \item ITVMTest initialised tests
-  \item Matchbox tests
-  \item Regression tests
+  \item ITVMTest
+  \item Matchbox
+  \item Regression
 \end{itemize}
+\end{columns}
 \end{frame}
 
 \subsection{FIFO}
+
 \begin{frame}
 \frametitle{Naive Approach}
+FIFO (first in - first out)
+\begin{columns}[cc]
+\column{2.0in}
 \begin{itemize}
-  \item The first approach we attempted was FIFO (first in - first
-    out).
-  \item Get a sorted queue (by when added) of tests to run, stop when we do not have
-    enough resources to run.
+  \item Reserve sorted by oldest
+  \item Stop when first test can't reserve enough
   \item Pros: simple to implement
-  \item Cons: it's crap - lots of resources were left unused, and
-    matchbox tests were not prioritised over regression that could
-    complete during
+  \item Cons: 
+    \begin{itemize}
+      \item lots of resources left unused
+      \item matchbox tests not prioritised
+    \end{itemize}
 \end{itemize}
+\column{0.5in}
+\includegraphics[scale=0.33]{fifo.png}
+\end{columns}
 \end{frame}
 
 \begin{frame}
@@ -171,12 +177,17 @@ Example:
 
 \begin{frame}
 \frametitle{Slightly less naive approach}
-Same strategy, but sort the order of the queue to be run by
+\begin{columns}[cc]
+\column{2.0in}
+Same strategy, queue sorted by
 \begin{itemize}
-  \item Priority
-  \item Is matchbox
-  \item When they were added 
+  \item Priority (higher integer before lower)
+  \item Is matchbox (true before false)
+  \item Add time ascending (older before younger)
 \end{itemize}
+\column{0.5in}
+\includegraphics[scale=0.50]{sort.png}
+\end{columns}
 \end{frame}
 
 \begin{frame}
@@ -199,11 +210,12 @@ Example:
 \begin{frame}
 \frametitle{The current approach: First-can-first-serve}
 \begin{itemize}
-  \item Go through the sorted queue, but do \textbf{not} stop when we
-    do not have enough resources to run
-  \item Pros: Will always attempt to run the most possible tests in parallel
-  \item Cons: Tests that reserve a lot of resources will be less
-    likely to run
+  \item Sorted queue from above
+
+  \item Do \textbf{not} stop when first can not reserve
+  \item Pros: Will always run the most possible tests in parallel
+  \item Cons: Tests that require a lot of resources will find
+    resources slower
 \end{itemize}
 \end{frame}
 
