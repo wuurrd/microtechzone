@@ -1,0 +1,73 @@
+[(u'c40', 15412L),
+ (u'sx20_marvin', 548L),
+ (u'c60_touch', 94L),
+ (u'sx20', 26865L),
+ (u'asterix_ref', 3042L),
+ (u'CTMS', 1732L),
+ (u'cisco_videophone', 246L),
+ (u'marcie_ref', 1794L),
+ (u'america', 2753L),
+ (u'c40_vlan', 297L),
+ (u'pluto_marcie', 30L),
+ (u'snoopy_vlan', 1449L),
+ (u'c90', 21142L),
+ (u'dante_server', 10L),
+ (u'c60_media', 199L),
+ (u'america2', 456L),
+ (u'boomerang', 1834L),
+ (u'mx200', 6205L),
+ (u'saturn', 8721L),
+ (u'c20', 15059L),
+ (u'falcon_marcie', 30L),
+ (u'sx20_stability', 155L),
+ (u'intrepid_ref', 2435L),
+ (u'CTS_secure', 528L),
+ (u'c60', 12552L),
+ (u'ephost_osd', 11031L),
+ (u'intrepid_prodtest', 3191L),
+ (u'c90_media_ref', 137L),
+ (u'oba_pluto', 75L),
+ (u'pluto_prodtest', 3126L),
+ (u'halley', 3L),
+ (u'c90_ref', 1196L),
+ (u'idefix', 1002L),
+ (u'veneto_ref', 4516L),
+ (u'tilegx_cannon', 2368L),
+ (u'calypso', 14282L),
+ (u'tilegx_sim', 60L),
+ (u'c90_media', 136L),
+ (u'mx300', 9745L),
+ (u'orion_ref', 207386L),
+ (u'falcon', 47176L),
+ (u'c40_ref', 2L),
+ (u'marcie', 8432L),
+ (u'c60_ref', 562L),
+ (u'pluto', 14547L),
+ (u'mway_conferences', 267L),
+ (u'snoopy', 69100L),
+ (u'CTMS_secure', 1559L),
+ (u'falcon_prodtest', 4100L),
+ (u'pluto_ref', 276L),
+ (u'ephost', 44700L),
+ (u'cisco_phone', 113L),
+ (u'falcon_vlan', 552L),
+ (u'c60_media_ref', 200L),
+ (u'CTS', 3570L),
+ (u'casper', 2363L),
+ (u'x86_h265', 1516L),
+ (u'sx20_prodtest', 1936L),
+ (u'falcon_ref', 1464L),
+ (u'snoopy_ref', 52258L)]
+
+
+SELECT avg(time.time) from 
+ (select ts.added_time - ts2.added_time as time from 
+  (select task_state.task_id from task_state, task 
+   where task.id = task_state.task_id
+         and task_state.state_name in ('complete', 'found_resources') 
+         and task.is_matchbox = true
+   group by task_state.task_id 
+   having count(*) = 2) as t 
+   join task_state as ts on (ts.task_id = t.task_id) 
+   join task_state as ts2 on (ts2.task_id = t.task_id) 
+   where ts.state_name = 'complete' and ts2.state_name = 'found_resources') as time
