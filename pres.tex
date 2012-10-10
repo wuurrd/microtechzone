@@ -78,9 +78,25 @@
   \tableofcontents
 \end{frame}
 
-\section{Testing}
+\section{ITVM}
 
-\subsection{ITVM tests parameters}
+\subsection{WTF?}
+\begin{frame}
+  \frametitle{ITVM: WTF?}
+  \begin{columns}[cc]
+  \column{0.5in}
+  \includegraphics[scale=0.33]{itvm.jpg}
+  \column{2.0in}
+  \begin{itemize}
+    \item Integrated Test Vending Machine
+    \item $\leftarrow$ Not the institute
+    \item Our in-house continous integration test running system
+    \item Runs tests (regression, matchbox, etc)
+  \end{itemize}
+  \end{columns}
+\end{frame}
+
+\subsection{Test parameters}
 \begin{frame}
   \frametitle{ITVM: What parameters affect reservation time?}
   \begin{itemize}
@@ -92,22 +108,7 @@
   \end{itemize}
 \end{frame}
 
-\subsection{ITVM: Test outcomes}
-\begin{frame}
-  \begin{columns}[cc]
-  \column{1.5in}
-  \includegraphics[scale=0.33]{brian.jpg}
-  \column{1.5in}
-  \begin{itemize}
-    \item Passed
-    \item Upload failure
-    \item Setup failure
-    \item Killed
-  \end{itemize}
-  \end{columns}
-\end{frame}
-
-\section{ITVM Tasks}
+\section{Tests}
 \subsection{Matchbox Tests (smoke tests)}
 \begin{frame}
   \frametitle{Matchbox: Y u no run faster?}
@@ -148,8 +149,8 @@ FIFO (first in - first out)
 \begin{columns}[cc]
 \column{2.0in}
 \begin{itemize}
-  \item Reserve sorted by oldest
-  \item Stop when first test can't reserve enough
+  \item Reserve (sorted by oldest)
+  \item Stop when first test can't reserve all
   \item Pros: simple to implement
   \item Cons: 
     \begin{itemize}
@@ -209,7 +210,12 @@ Example:
 
 \begin{frame}
 \frametitle{The current approach: First-can-first-serve}
+\begin{columns}[cc]
+\column{0.3in}
+\includegraphics[scale=0.20]{limited.jpg}
+\column{2.2in}
 \begin{itemize}
+
   \item Sorted queue from above
 
   \item Do \textbf{not} stop when first can not reserve
@@ -217,6 +223,7 @@ Example:
   \item Cons: Tests that require a lot of resources will find
     resources slower
 \end{itemize}
+\end{columns}
 \end{frame}
 
 \begin{frame}
@@ -230,7 +237,7 @@ Example:
   \item Task 5 requires 1 snoopy and 1 falcon
   \item $\rightarrow$ The chance that Task 4 runs when there is a long
     queue is smaller, so we can shorten the queue and prioritise
-    getting done with as many tasks as possible.
+    getting done with as many tests as possible.
 \end{itemize}
 \end{frame}
 
